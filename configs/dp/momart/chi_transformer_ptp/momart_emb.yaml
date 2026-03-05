@@ -1,0 +1,67 @@
+pipeline_name: dpptp_momart
+# env
+env_name: table_cleanup_to_sink
+env_type: expert
+abs_action: true
+dataset_path: PATH_TO_DATASET/momart/${env_name}_${env_type}.hdf5
+mode: train
+max_episode_steps: 1500
+render_obs_key: 'rgb'
+shape_meta:
+  action:
+    shape:
+    - 10
+  obs:
+    dp_emb:
+      shape:
+      - 256
+      type: low_dim
+action_dim: 10
+obs_steps: 4
+action_steps: 8
+# obs_encoder
+rgb_model: resnet18
+resize_shape: null
+crop_shape:
+  - 75
+  - 100
+random_crop: true
+use_group_norm: true
+use_seq: true
+# train
+device: cuda:0
+seed: 100
+gradient_steps: 1000000
+batch_size: 64
+horizon: 11
+nn: chi_transformer
+diffusion: ddpm
+sample_steps: 50
+temperature: 1.0
+# optimizer
+lr: 0.0001
+# eval
+model_path: False
+num_envs: 15
+eval_episodes: 30
+save_video: false
+eval_freq: 100000
+# log
+exp_name: ${env_name}_${env_type}/obs_${obs_steps}_act_${action_steps}
+save_path: PATH_TO_SAVE_MODEL
+project: CleanDiffuser
+group: dp_momart
+wandb_mode: offline
+log_freq: 1000
+save_freq: 100000
+# work_dir: ${save_path}/${pipeline_name}/${exp_name}_${now:%Y%m%d_%H%M%S}/${seed}
+work_dir: ${save_path}/momart/dpptp/${exp_name}/${seed}
+# hydra
+hydra:
+  run:
+    dir: ${work_dir}
+  job:
+    chdir: false
+
+
+

@@ -1,0 +1,101 @@
+pipeline_name: mikasa-robo
+# env
+env_name: InterceptGrabMedium-v0
+abs_action: true
+dataset_path: PATH_TO_DATASET/mikasa/InterceptGrabMedium-v0
+mode: train
+max_episode_steps: 90
+render_obs_key: 'rgb'
+shape_meta:
+  action:
+    shape:
+    - 8
+  obs:
+    rgb:
+      shape:
+      - 3
+      - 128
+      - 128
+      type: rgb
+    rgb_wrist:
+      shape:
+      - 3
+      - 128
+      - 128
+      type: rgb
+    joints:
+      shape:
+      - 25
+      type: low_dim
+action_dim: 8
+obs_steps: 2
+action_steps: 8
+# obs_encoder
+rgb_model: resnet18
+resize_shape: null
+crop_shape:
+  - 100
+  - 100
+random_crop: true
+use_group_norm: true
+use_seq: true
+# train
+device: cuda:0
+seed: 100
+gradient_steps: 600000
+batch_size: 64
+horizon: 9
+nn: chi_transformer
+diffusion: ddpm
+sample_steps: 50
+temperature: 1.0
+# optimizer
+lr: 0.0001
+# eval
+model_path: False
+num_envs: 15
+eval_episodes: 30
+save_video: True
+eval_freq: 100000
+# mamba
+mamba_ssm_cfg:
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  dt_rank: "auto"
+  dt_min: 0.001
+  dt_max: 0.1
+  dt_init: "random"
+  dt_scale: 1.0
+  dt_init_floor: 1e-4
+  conv_bias: True
+  bias: False
+  use_fast_path: True
+mamba:
+  _target_: cleandiffuser.nn_diffusion.mail.MixerModel
+  ssm_cfg: ${mamba_ssm_cfg}
+  d_model: 256
+  n_layer: 4
+  norm_epsilon: 1e-5
+  rms_norm: False
+  fused_add_norm: False
+  residual_in_fp32: False
+  device: ${device}
+# log
+exp_name: ${env_name}/obs_${obs_steps}_act_${action_steps}
+save_path: PATH_TO_SAVE_MODEL
+project: CleanDiffuser
+group: dp_mikasa
+wandb_mode: offline
+log_freq: 1000
+save_freq: 100000
+work_dir: ${save_path}/mail/${exp_name}/${seed}
+# hydra
+hydra:
+  run:
+    dir: ${work_dir}
+  job:
+    chdir: false
+
+
+

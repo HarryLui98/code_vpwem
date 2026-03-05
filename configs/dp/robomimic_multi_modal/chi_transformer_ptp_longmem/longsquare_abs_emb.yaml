@@ -1,0 +1,85 @@
+pipeline_name: longmemdpptp_robomimic
+# env
+env_name: longsquare
+env_type: ph
+abs_action: true
+dataset_path: PATH_TO_DATASET/robomimic/longsquare/demos.hdf5
+mode: train
+max_episode_steps: 500
+render_obs_key: 'agentview_image'
+shape_meta:
+  action:
+    shape:
+    - 10
+  obs:
+    dp_emb:
+      shape:
+      - 256
+      type: low_dim
+action_dim: 10
+obs_steps: 2
+action_steps: 8
+# obs_encoder
+rgb_model: resnet18
+resize_shape: null
+crop_shape:
+  - 76
+  - 76
+random_crop: true
+use_group_norm: true
+use_seq: true
+# train
+device: cuda:0
+seed: 100
+gradient_steps: 1000000
+batch_size: 64
+horizon: 9
+nn: chi_transformer
+diffusion: ddpm
+sample_steps: 50
+temperature: 1.0
+short_cond_dropout: 0.3
+long_cond_dropout: 0.3
+p_drop_emb: 0.0
+p_drop_attn: 0.3
+# action predictability
+dataset_action_pred_ratio_path: ${save_path}/robomimic/${env_name}_${env_type}_action_predict_ratio.npy
+dataset_action_pred_mlp_path: ${save_path}/robomimic/${env_name}_${env_type}_action_predict_model.pth
+pred_reg_coeff: 0
+# long memory
+mem_compress_method: 'qformer' # kmeans, qformer
+mem_compress_length: 4
+dataset_memory_type: 'random_from_full' # 'sliding_window'
+memory_pos_emb: 'sin_pos'
+qformer_emb_dim: 256
+qformer_num_layers: 1
+qformer_cache_compress: 'adjsim'
+qformer_cache_max_length: 8
+dataset_memory_subsample_ratio: 20
+# optimizer
+lr: 0.0001
+# eval
+model_path: ${save_path}
+num_envs: 15
+eval_episodes: 30
+save_video: false
+eval_freq: 100000
+# log
+exp_name: ${env_name}_${env_type}/obs_${obs_steps}_act_${action_steps}/${dataset_memory_subsample_ratio}_${mem_compress_method}_${mem_compress_length}_${memory_pos_emb}_${qformer_num_layers}_${qformer_cache_compress}_${qformer_cache_max_length}_${lr}
+save_path: PATH_TO_SAVE_MODEL
+project: CleanDiffuser
+group: dp_robomimic_multi_modal
+wandb_mode: offline
+log_freq: 1000
+save_freq: 100000
+# work_dir: ${save_path}/${pipeline_name}/${mode}/${env_name}/${exp_name}_${now:%Y%m%d_%H%M%S}/${seed}
+work_dir: ${save_path}/ours/robomimic_emb/${exp_name}/${seed}
+# hydra
+hydra:
+  run:
+    dir: ${work_dir}
+  job:
+    chdir: false
+
+
+
