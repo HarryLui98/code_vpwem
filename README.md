@@ -63,7 +63,7 @@ pip install setuptools==65.5.0 pip==21  # gym 0.21 installation is broken with m
 pip install wheel==0.38.0
 pip install gym==0.21.0 gym-notices==0.0.8
 ```
-#### 6. Install CleanDiffuser and DP-LSCM
+#### 6. Install CleanDiffuser and VPWEM
 For users who need to run `pipelines` and reproduce the results of the paper, they will need to install RL simulators.
 
 ```bash
@@ -78,9 +78,9 @@ pip install -e .
 ```
 vpwem/
 ├── cleandiffuser/          # Core library
-│   ├── dataset/            # Dataset loaders (Robomimic, MoMaRT, MIKASa, etc.)
+│   ├── dataset/            # Dataset loaders (Robomimic, MoMaRT, MIKASA, etc.)
 │   ├── diffusion/          # Diffusion models (DDPM, DDIM, EDM, etc.)
-│   ├── env/                # Environment wrappers (Robomimic, MIKASa, etc.)
+│   ├── env/                # Environment wrappers (Robomimic, MIKASA, etc.)
 │   ├── nn_condition/       # Condition networks (image observation encoders)
 │   ├── nn_diffusion/       # Diffusion backbone networks (ChiTransformer, etc.)
 │   ├── nn_memory/          # Memory modules (Q-Former, KMeans, AdjSim, etc.)
@@ -88,7 +88,7 @@ vpwem/
 ├── configs/dp/             # Hydra YAML config files
 │   ├── robomimic_multi_modal/  # Robomimic benchmark configs
 │   ├── momart/                 # MoMaRT benchmark configs
-│   └── mikasa/                 # MIKASa benchmark configs
+│   └── mikasa/                 # MIKASA benchmark configs
 ├── pipelines/              # Training and evaluation scripts
 ├── exp_scripts/            # Shell scripts for running experiments
 └── requirements.txt
@@ -154,4 +154,4 @@ We provide example shell scripts in `exp_scripts/` that run training and evaluat
 - [CleanDiffuser](https://github.com/CleanDiffuserTeam/CleanDiffuser)
 - [Diffusion Policy](https://github.com/real-stanford/diffusion_policy)
 - [Long-context Diffusion Policy](https://github.com/long-context-dp/ldp)
-
+- [MaIL](https://github.com/ALRhub/MaIL)
